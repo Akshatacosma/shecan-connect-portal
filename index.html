@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <title>SheCan Connect Portal · She Can Foundation</title>
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    /* ----- CSS Variables (light/dark) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    :root {
+      --bg-body: #f8f5ff;
+      --bg-card: rgba(255,255,255,0.7);
+      --bg-glass: rgba(255,255,255,0.3);
+      --border-glass: rgba(255,255,255,0.5);
+      --text-primary: #1e1b2e;
+      --text-secondary: #3d3566;
+      --purple: #7c3aed;
+      --purple-dark: #5b21b6;
+      --pink: #ec4899;
+      --indigo: #4f46e5;
+      --gradient: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+      --shadow: 0 20px 40px -12px rgba(124, 58, 237, 0.25);
+      --nav-bg: rgba(255,255,255,0.8);
+      --input-bg: #ffffff;
+    }
+    body.dark {
+      --bg-body: #0f0c1a;
+      --bg-card: rgba(30, 27, 46, 0.8);
+      --bg-glass: rgba(30, 27, 46, 0.4);
+      --border-glass: rgba(255,255,255,0.1);
+      --text-primary: #eeecf5;
+      --text-secondary: #c4bce6;
+      --nav-bg: rgba(15, 12, 26, 0.9);
+      --input-bg: #1e1b2e;
+      --shadow: 0 20px 40px -12px rgba(0,0,0,0.7);
+    }
+    /* ----- utils ----- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .btn-primary {
+      background: var(--gradient);
+      border: none;
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 8px 20px rgba(124,58,237,0.3);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 28px rgba(124,58,237,0.5);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--purple);
+      color: var(--purple);
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline:hover {
+      background: var(--purple);
+      color: white;
+    }
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-glass);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      box-shadow: var(--shadow);
+    }
+    /* ----- NAVIGATION ----- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(124,58,237,0.1);
+      padding: 0.8rem 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo i {
+      -webkit-text-fill-color: initial;
+      color: var(--purple);
+      margin-right: 6px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--purple);
+    }
+    .hamburger {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+    .dark-toggle {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--text-primary);
+      margin-left: 0.5rem;
+    }
+    @media (max-width: 768px) {
+      .hamburger { display: block; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 1.2rem 0;
+        gap: 0.8rem;
+      }
+      .nav-links.active { display: flex; }
+    }
+    /* ----- HERO ----- */
+    .hero {
+      padding: 4rem 0 3rem;
+      background: radial-gradient(circle at 10% 30%, rgba(124,58,237,0.08) 0%, transparent 60%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .hero h1 span {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin: 1.5rem 0 2rem;
+    }
+    .hero-illustration {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 10rem;
+      color: var(--purple);
+      opacity: 0.3;
+    }
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 3rem;
+      justify-content: space-around;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-illustration { font-size: 5rem; }
+      .hero h1 { font-size: 2.6rem; }
+    }
+    /* ----- sections ----- */
+    section { padding: 4rem 0; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .program-card, .testimonial-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      box-shadow: var(--shadow);
+      transition: 0.3s;
+      border: 1px solid var(--border-glass);
+    }
+    .program-card:hover { transform: translateY(-8px); }
+    .program-card i { font-size: 2.6rem; color: var(--purple); margin-bottom: 0.6rem; }
+    /* ----- forms ----- */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-group label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.3rem;
+      color: var(--text-secondary);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid #d1c9e8;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--purple);
+      box-shadow: 0 0 0 4px rgba(124,58,237,0.15);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--gradient);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      box-shadow: var(--shadow);
+      transform: translateY(120px);
+      opacity: 0;
+      transition: 0.4s;
+      z-index: 9999;
+      font-weight: 500;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    /* admin dashboard mini */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .admin-stat {
+      background: var(--bg-card);
+      padding: 1.2rem;
+      border-radius: 1.5rem;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--border-glass);
+    }
+    .admin-stat h4 { font-size: 1.8rem; }
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(124,58,237,0.1);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg">Success</span></div>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="container nav-container">
+      <div class="logo"><i class="fas fa-female"></i> SheCan</div>
+      <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+      <div class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#programs">Programs</a>
+        <a href="#volunteer">Volunteer</a>
+        <a href="#contact">Contact</a>
+        <a href="#login" id="loginLink">Login</a>
+        <a href="#register" id="registerLink">Register</a>
+        <button class="dark-toggle" id="darkToggle"><i class="fas fa-moon"></i></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home" class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Empower <span>Women</span> · Transform <span>Communities</span></h1>
+        <p>She Can Foundation connects women with opportunities, training, and a global sisterhood. Join us to create lasting impact.</p>
+        <a href="#volunteer" class="btn-primary"><i class="fas fa-hand-holding-heart"></i> Join as Volunteer</a>
+        <a href="#programs" class="btn-outline" style="margin-left:1rem;">Explore Programs</a>
+        <div class="stats">
+          <div class="stat-item"><span class="stat-number" data-count="2847">0</span><br>Women Empowered</div>
+          <div class="stat-item"><span class="stat-number" data-count="512">0</span><br>Volunteers</div>
+          <div class="stat-item"><span class="stat-number" data-count="43">0</span><br>Training Programs</div>
+          <div class="stat-item"><span class="stat-number" data-count="120">0</span><br>Communities</div>
+        </div>
+      </div>
+      <div class="hero-illustration"><i class="fas fa-venus"></i></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" style="background: var(--bg-body);">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-info-circle"></i> About SheCan</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:1.5rem;">
+        <div class="glass-card"><h3>Mission</h3><p>To empower women through education, skill development, and leadership, creating a world where every woman can achieve her full potential.</p></div>
+        <div class="glass-card"><h3>Vision</h3><p>A global community of confident, skilled, and connected women driving positive change in every society.</p></div>
+        <div class="glass-card"><h3>Core Values</h3><p>💜 Inclusivity · 💪 Courage · 🤝 Collaboration · 🌱 Growth · ✨ Integrity</p></div>
+        <div class="glass-card"><h3>Impact</h3><p>Over 2,800 women trained, 500+ volunteers active, and 43 programs across 120 communities.</p></div>
+      </div>
+      <div style="margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap;">
+        <span class="btn-primary" style="background:var(--gradient);">2020 · Founded</span>
+        <span class="btn-primary" style="background:var(--gradient);">2022 · 1000+ women</span>
+        <span class="btn-primary" style="background:var(--gradient);">2025 · Global reach</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section id="programs">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-chalkboard-teacher"></i> Our Programs</h2>
+      <div class="cards-grid">
+        <div class="program-card"><i class="fas fa-graduation-cap"></i><h3>Education</h3><p>Literacy & digital skills for women of all ages.</p><button class="btn-outline" style="padding:0.4rem 1.2rem; font-size:0.9rem;">Learn More</button></div>
+        <div class="program-card"><i class="fas fa-laptop-code"></i><h3>Skill Development</h3><p>Vocational training, coding, and entrepreneurship.</p><button class="btn-outline" style="padding:0.4rem 1.2rem; font-size:0.9rem;">Learn More</button></div>
+        <div class="program-card"><i class="fas fa-heartbeat"></i><h3>Health Awareness</h3><p>Mental & physical health workshops and support.</p><button class="btn-outline" style="padding:0.4rem 1.2rem; font-size:0.9rem;">Learn More</button></div>
+        <div class="program-card"><i class="fas fa-users"></i><h3>Leadership</h3><p>Public speaking, advocacy, and community leadership.</p><button class="btn-outline" style="padding:0.4rem 1.2rem; font-size:0.9rem;">Learn More</button></div>
+        <div class="program-card"><i class="fas fa-store"></i><h3>Entrepreneurship</h3><p>Business planning, funding, and mentorship.</p><button class="btn-outline" style="padding:0.4rem 1.2rem; font-size:0.9rem;">Learn More</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEER REGISTRATION -->
+  <section id="volunteer" style="background: var(--bg-body);">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-hands-helping"></i> Volunteer Registration</h2>
+      <div class="glass-card" style="max-width:700px; margin:0 auto;">
+        <form id="volunteerForm">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name *</label><input type="text" id="vName" required></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="vEmail" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Phone *</label><input type="tel" id="vPhone" required></div>
+            <div class="form-group"><label>Gender</label><select id="vGender"><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Age</label><input type="number" id="vAge"></div>
+            <div class="form-group"><label>City</label><input type="text" id="vCity"></div>
+          </div>
+          <div class="form-group"><label>State</label><input type="text" id="vState"></div>
+          <div class="form-group"><label>Skills</label><input type="text" id="vSkills" placeholder="e.g. Teaching, Coding, Fundraising"></div>
+          <div class="form-group"><label>Areas of Interest</label><input type="text" id="vInterest" placeholder="Education, Health, Leadership..."></div>
+          <div class="form-group"><label>Availability</label><select id="vAvailability"><option>Weekends</option><option>Weekdays</option><option>Flexible</option></select></div>
+          <div class="form-group"><label>Experience Level</label><select id="vExperience"><option>Beginner</option><option>Intermediate</option><option>Expert</option></select></div>
+          <button type="submit" class="btn-primary" style="width:100%;"><i class="fas fa-paper-plane"></i> Register</button>
+        </form>
+        <div id="volunteerMsg" style="margin-top:1rem; font-weight:600;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-envelope"></i> Contact Us</h2>
+      <div class="glass-card" style="max-width:600px; margin:0 auto;">
+        <form id="contactForm">
+          <div class="form-group"><label>Name *</label><input type="text" id="cName" required></div>
+          <div class="form-group"><label>Email *</label><input type="email" id="cEmail" required></div>
+          <div class="form-group"><label>Subject</label><input type="text" id="cSubject"></div>
+          <div class="form-group"><label>Message *</label><textarea id="cMessage" rows="3" required></textarea></div>
+          <button type="submit" class="btn-primary" style="width:100%;"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
+        <div id="contactMsg" style="margin-top:1rem; font-weight:600;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN DASHBOARD (mini) -->
+  <section id="admin" style="background: var(--bg-body);">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+      <div class="admin-stats">
+        <div class="admin-stat"><h4 id="totalVolunteers">0</h4><span>Volunteers</span></div>
+        <div class="admin-stat"><h4 id="totalMessages">0</h4><span>Messages</span></div>
+        <div class="admin-stat"><h4 id="totalUsers">0</h4><span>Users</span></div>
+        <div class="admin-stat"><h4 id="totalPrograms">5</h4><span>Programs</span></div>
+      </div>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+        <button class="btn-outline" id="viewVolunteersBtn"><i class="fas fa-users"></i> View Volunteers</button>
+        <button class="btn-outline" id="viewMessagesBtn"><i class="fas fa-envelope"></i> View Messages</button>
+      </div>
+      <div id="adminDataDisplay" style="margin-top:1.5rem;" class="glass-card"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer"><p>© 2026 She Can Foundation · Empowering women worldwide</p></div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    (function() {
+      // ---------- TOAST ----------
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+
+      // ---------- DARK MODE ----------
+      const darkToggle = document.getElementById('darkToggle');
+      darkToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        darkToggle.innerHTML = document.body.classList.contains('dark') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
+
+      // ---------- HAMBURGER ----------
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('navLinks');
+      hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+      // ---------- ANIMATED COUNTERS ----------
+      function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        counters.forEach(counter => {
+          const target = parseInt(counter.dataset.count);
+          let current = 0;
+          const step = Math.ceil(target / 40);
+          const interval = setInterval(() => {
+            current += step;
+            if (current >= target) { current = target; clearInterval(interval); }
+            counter.textContent = current.toLocaleString();
+          }, 40);
+        });
+      }
+      animateCounters();
+
+      // ---------- MOCK DATA STORE (localStorage) ----------
+      let volunteers = JSON.parse(localStorage.getItem('shecan_volunteers')) || [];
+      let messages = JSON.parse(localStorage.getItem('shecan_messages')) || [];
+      let users = JSON.parse(localStorage.getItem('shecan_users')) || [];
+
+      function saveData() {
+        localStorage.setItem('shecan_volunteers', JSON.stringify(volunteers));
+        localStorage.setItem('shecan_messages', JSON.stringify(messages));
+        localStorage.setItem('shecan_users', JSON.stringify(users));
+        updateAdminStats();
+      }
+
+      function updateAdminStats() {
+        document.getElementById('totalVolunteers').textContent = volunteers.length;
+        document.getElementById('totalMessages').textContent = messages.length;
+        document.getElementById('totalUsers').textContent = users.length;
+      }
+      updateAdminStats();
+
+      // ---------- VOLUNTEER FORM ----------
+      document.getElementById('volunteerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('vName').value.trim();
+        const email = document.getElementById('vEmail').value.trim();
+        const phone = document.getElementById('vPhone').value.trim();
+        if (!name || !email || !phone) { showToast('Please fill all required fields'); return; }
+        if (!email.includes('@')) { showToast('Invalid email'); return; }
+        const volunteer = {
+          id: Date.now(),
+          name, email, phone,
+          gender: document.getElementById('vGender').value,
+          age: document.getElementById('vAge').value,
+          city: document.getElementById('vCity').value,
+          state: document.getElementById('vState').value,
+          skills: document.getElementById('vSkills').value,
+          interest: document.getElementById('vInterest').value,
+          availability: document.getElementById('vAvailability').value,
+          experience: document.getElementById('vExperience').value
+        };
+        volunteers.push(volunteer);
+        saveData();
+        document.getElementById('volunteerMsg').innerHTML = '<span style="color:var(--purple);">✅ Registration successful! Thank you.</span>';
+        showToast('Volunteer registered!');
+        this.reset();
+      });
+
+      // ---------- CONTACT FORM ----------
+      document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('cName').value.trim();
+        const email = document.getElementById('cEmail').value.trim();
+        const subject = document.getElementById('cSubject').value.trim();
+        const message = document.getElementById('cMessage').value.trim();
+        if (!name || !email || !message) { showToast('Please fill all required fields'); return; }
+        if (!email.includes('@')) { showToast('Invalid email'); return; }
+        messages.push({ id: Date.now(), name, email, subject, message, date: new Date().toISOString() });
+        saveData();
+        document.getElementById('contactMsg').innerHTML = '<span style="color:var(--purple);">✅ Message sent! We\'ll get back to you.</span>';
+        showToast('Message sent!');
+        this.reset();
+      });
+
+      // ---------- ADMIN VIEWS ----------
+      document.getElementById('viewVolunteersBtn').addEventListener('click', function() {
+        const container = document.getElementById('adminDataDisplay');
+        if (volunteers.length === 0) { container.innerHTML = '<p>No volunteers yet.</p>'; return; }
+        let html = '<h4>Volunteers</h4><ul style="list-style:none; padding:0;">';
+        volunteers.forEach(v => {
+          html += `<li style="background:var(--bg-card); margin:0.4rem 0; padding:0.6rem; border-radius:30px;">🧑 ${v.name} (${v.email}) · ${v.city || 'N/A'} · ${v.skills || '—'}</li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+      });
+
+      document.getElementById('viewMessagesBtn').addEventListener('click', function() {
+        const container = document.getElementById('adminDataDisplay');
+        if (messages.length === 0) { container.innerHTML = '<p>No messages.</p>'; return; }
+        let html = '<h4>Messages</h4><ul style="list-style:none; padding:0;">';
+        messages.forEach(m => {
+          html += `<li style="background:var(--bg-card); margin:0.4rem 0; padding:0.6rem; border-radius:30px;">✉️ ${m.name} (${m.email}): ${m.message.slice(0,60)}...</li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+      });
+
+      // ---------- LOGIN / REGISTER MOCK (simple navigation) ----------
+      document.getElementById('loginLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showToast(' Login (demo) — use any email/pass');
+      });
+      document.getElementById('registerLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        const name = prompt('Register: Enter your name');
+        if (name) {
+          const email = prompt('Enter email');
+          if (email) {
+            users.push({ id: Date.now(), name, email, role: 'user' });
+            saveData();
+            showToast(`Welcome ${name}! You're registered.`);
+          }
+        }
+      });
+
+      // initial admin data display
+      document.getElementById('adminDataDisplay').innerHTML = '<p style="opacity:0.7;">Click "View Volunteers" or "View Messages"</p>';
+    })();
+  </script>
+</body>
+</html>
